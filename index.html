@@ -204,24 +204,27 @@
 
         .profile-photo {
             width: 400px;
-            height: 500px;
+            height: 400px;
             background: linear-gradient(135deg, var(--primary-green), var(--light-green));
-            border-radius: 10px;
+            border-radius: 50%;
             position: relative;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background-image: url('https://github.com/jamieyuan13-rgb/graph-ai-portfolio/blob/main/55459536-22d5-4a31-b871-61b5b12624f2.JPG?raw=true');
+            background-size: cover;
+            background-position: center;
+            border: 6px solid white;
         }
 
         .profile-photo::before {
-            content: 'VM';
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 8rem;
-            font-weight: bold;
-            color: white;
-            opacity: 0.3;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(124, 179, 66, 0.1);
+            border-radius: 50%;
         }
 
         .contact-info {
@@ -439,7 +442,7 @@
 
             .profile-photo {
                 width: 300px;
-                height: 400px;
+                height: 300px;
             }
 
             .contact-info {
@@ -474,11 +477,11 @@
 
             .profile-photo {
                 width: 250px;
-                height: 350px;
+                height: 250px;
             }
 
             .profile-photo::before {
-                font-size: 6rem;
+                display: none;
             }
         }
     </style>
