@@ -1,1 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victor Meza - Generative AI Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary-green: #7cb342;
+            --dark-green: #689f38;
+            --light-green: #aed581;
+            --primary-blue: #2563eb;
+            --dark-blue: #1d4ed8;
+            --light-blue: #60a5fa;
+            --bg-light: #f5f5f5;
+            --bg-white: #ffffff;
+            --text-dark: #333333;
+            --text-medium: #666666;
+            --text-light: #999999;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--bg-light);
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary-green);
+            color: white;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .nav-menu {
+            list-style: none;
+            text-align: center;
+        }
+
+        .nav-menu li {
+            margin: 2rem 0;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.4rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after,
+        .nav-menu a.active::after {
+            width: 100%;
+        }
+
+        /* Menu Toggle */
+        .menu-toggle {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-green);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:hover {
+            background: var(--dark-green);
+            transform: scale(1.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 0;
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Home Section */
+        .home-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            background: var(--bg-white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .home-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 4rem;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .home-text {
+            z-index: 2;
+        }
+
+        .home-text h1 {
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+        }
+
+        .home-text .subtitle {
+            font-size: 1.4rem;
+            color: var(--text-medium);
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .home-text .description {
+            font-size: 1.1rem;
+            color: var(--text-medium);
+            line-height: 1.8;
+            max-width: 500px;
+            margin-bottom: 2rem;
+        }
+
+        .download-cv {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .download-cv:hover {
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .home-image {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-photo {
+            width: 400px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--primary-green), var(--light-green));
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .profile-photo::before {
+            content: 'VM';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            font-weight: bold;
+            color: white;
+            opacity: 0.3;
+        }
+
+        .contact-info {
+            position: absolute;
+            bottom: 2rem;
+            left: 4rem;
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 3;
+        }
+
+        .contact-info .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--text-dark);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info p {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 6rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 3rem;
+            letter-spacing: -1px;
+        }
+
+        .about-section {
+            background: var(--bg-white);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .about-sidebar h3 {
+            font-size: 1.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .skills-list {
+            list-style: none;
+        }
+
+        .skills-list li {
+            padding: 0.5rem 0;
+            color: var(--text-medium);
+            border-bottom: 1px solid #eee;
+        }
+
+        .about-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-medium);
+        }
+
+        /* Course Section */
+        .course-section {
+            background: var(--bg-light);
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .course-card {
+            background: var(--bg-white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .course-card h4 {
+            font-size: 1.3rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .course-card ul {
+            list-style: none;
+            color: var(--text-medium);
+        }
+
+        .course-card li {
+            margin: 0.5rem 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .course-card li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary-green);
+            font-weight: bold;
+        }
+
+        /* Submissions Section */
+        .submissions-section {
+            background: var(--bg-white);
+        }
+
+        .submissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .submission-card {
+            background: var(--bg-light);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .submission-card:hover {
+            border-color: var(--primary-green);
+            transform: translateY(-3px);
+        }
+
+        .submission-header {
+            background: var(--primary-green);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .week-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .submission-content {
+            padding: 1.5rem;
+            background: var(--bg-white);
+        }
+
+        .submission-content h4 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .coming-soon {
+            background: var(--light-green);
+            color: var(--dark-green);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        /* Background Pattern */
+        .home-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 49%, rgba(124, 179, 66, 0.05) 49%, rgba(124, 179, 66, 0.05) 51%, transparent 51%);
+            background-size: 20px 20px;
+            z-index: 1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .home-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 0 2rem;
+            }
+
+            .home-image {
+                height: 50vh;
+            }
+
+            .profile-photo {
+                width: 300px;
+                height: 400px;
+            }
+
+            .contact-info {
+                position: static;
+                margin-top: 2rem;
+                display: inline-block;
+            }
+
+            .content-section {
+                padding: 4rem 2rem;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .home-text h1 {
+                font-size: 3rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .course-grid,
+            .submissions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-photo {
+                width: 250px;
+                height: 350px;
+            }
+
+            .profile-photo::before {
+                font-size: 6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle -->
+    <button class="menu-toggle" onclick="toggleMenu()">
+        <span id="menu-icon">☰</span>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <ul class="nav-menu">
+            <li><a href="#home" class="nav-link active">Home</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#course" class="nav-link">Course</a></li>
+            <li><a href="#submissions" class="nav-link">Submissions</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="home-section">
+            <div class="home-content">
+                <div class="home-text">
+                    <h1>VICTOR MEZA</h1>
+                    <p class="subtitle">Agriculture & AI Student</p>
+                    <p class="description">
+                        An undergraduate student at UC Davis specializing in International Agriculture Development, 
+                        exploring the intersection of agricultural innovation and artificial intelligence. 
+                        Currently mastering generative AI tools for research and productivity applications.
+                    </p>
+                    <a href="#" class="download-cv">View Course Progress</a>
+                </div>
+                
+                <div class="home-image">
+                    <div class="profile-photo"></div>
+                </div>
+            </div>
+            
+            <div class="contact-info">
+                <div class="logo">VM</div>
+                <p>Davis, CA</p>
+                <p>UC Davis Student</p>
+                <p>Plants4You Owner</p>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section content-section">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-grid">
+                <div class="about-sidebar">
+                    <h3>Skills & Expertise</h3>
+                    <ul class="skills-list">
+                        <li>International Agriculture Development</li>
+                        <li>Plant Sciences & Botany</li>
+                        <li>Business Operations</li>
+                        <li>Data Analysis & Excel</li>
+                        <li>Multilingual Communication (Tagalog)</li>
+                        <li>Generative AI Tools</li>
+                        <li>Customer Service</li>
+                        <li>Inventory Management</li>
+                    </ul>
+                </div>
+                
+                <div class="about-content">
+                    <p>I'm a first-year undergraduate student at UC Davis pursuing a Bachelor of Science in International Agriculture Development. My journey uniquely combines hands-on agricultural experience with cutting-edge AI learning.</p>
+                    
+                    <p>As the owner of Plants4You, an online plant business on Etsy, I've successfully managed over 500 sales and generated $5,700+ in revenue through propagating carnivorous and drought-resistant plants. This entrepreneurial experience has given me practical insights into inventory management, customer service, and business operations.</p>
+                    
+                    <p>Currently volunteering at Knights Landing One Health Center, I serve as a Tagalog interpreter for patients and medical students while maintaining clinical operations. This role has strengthened my communication skills and commitment to community service.</p>
+                    
+                    <p>Through the Generative AI for Work & Research course, I'm exploring how AI can revolutionize agricultural research, data analysis, and international development communication. My goal is to bridge traditional agricultural practices with innovative AI solutions to address global food security challenges.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Course Section -->
+        <section id="course" class="course-section content-section">
+            <h2 class="section-title">Generative AI Course</h2>
+            <p style="color: var(--text-medium); font-size: 1.1rem; margin-bottom: 2rem;">
+                An 8-week intensive bootcamp focused on practical AI applications for research and productivity
+            </p>
+            
+            <div class="course-grid">
+                <div class="course-card">
+                    <h4>Weeks 1-2: Foundation & Analysis</h4>
+                    <ul>
+                        <li>LLM architecture and training fundamentals</li>
+                        <li>Building research websites with no-code tools</li>
+                        <li>Automated data analysis with Julius & ChatGPT</li>
+                        <li>Creating dashboards and visualizations</li>
+                        <li>Markdown, LaTeX, and HTML generation</li>
+                    </ul>
+                </div>
+                
+                <div class="course-card">
+                    <h4>Weeks 3-4: Research Intelligence</h4>
+                    <ul>
+                        <li>Literature reviews with Elicit and LiteRev</li>
+                        <li>Text classification and sentiment analysis</li>
+                        <li>Knowledge mapping from document collections</li>
+                        <li>Custom GPTs for specialized use cases</li>
+                        <li>Building interactive research chatbots</li>
+                    </ul>
+                </div>
+                
+                <div class="course-card">
+                    <h4>Weeks 5-6: Automation & Communication</h4>
+                    <ul>
+                        <li>AI-driven task automation workflows</li>
+                        <li>Email response and monitoring systems</li>
+                        <li>Browser control agents for web tasks</li>
+                        <li>Research dissemination strategies</li>
+                        <li>AI-generated scientific visualizations</li>
+                    </ul>
+                </div>
+                
+                <div class="course-card">
+                    <h4>Weeks 7-8: Capstone Project</h4>
+                    <ul>
+                        <li>Collaborative final project development</li>
+                        <li>Real-time feedback and troubleshooting</li>
+                        <li>Peer review and improvement sessions</li>
+                        <li>Public presentation and Q&A</li>
+                        <li>Portfolio showcase and certification</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Submissions Section -->
+        <section id="submissions" class="submissions-section content-section">
+            <h2 class="section-title">Weekly Submissions</h2>
+            <p style="color: var(--text-medium); font-size: 1.1rem; margin-bottom: 2rem;">
+                Documenting my AI learning journey through practical applications and projects
+            </p>
+            
+            <div class="submissions-grid">
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">01</div>
+                        <p>Foundation</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>Websites, Documents & Presentations</h4>
+                        <p>Exploring LLM fundamentals and building research websites with no-code tools.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">02</div>
+                        <p>Analysis</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>AI-Automated Data Analysis</h4>
+                        <p>Mastering data analysis tools and creating automated reporting systems.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">03</div>
+                        <p>Research</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>Research & Text Analysis</h4>
+                        <p>Literature reviews, text classification, and knowledge synthesis techniques.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">04</div>
+                        <p>Intelligence</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>Custom GPTs and Chatbots</h4>
+                        <p>Building specialized AI assistants for agricultural research applications.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">05</div>
+                        <p>Automation</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>AI Task Automation</h4>
+                        <p>Creating automation workflows for research and agricultural data management.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">06</div>
+                        <p>Communication</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>AI Communication & Outreach</h4>
+                        <p>Developing AI-driven approaches for research communication and outreach.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">07</div>
+                        <p>Development</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>Capstone Project</h4>
+                        <p>Building a comprehensive AI solution for agricultural research challenges.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="submission-card">
+                    <div class="submission-header">
+                        <div class="week-number">08</div>
+                        <p>Showcase</p>
+                    </div>
+                    <div class="submission-content">
+                        <h4>Final Presentation</h4>
+                        <p>Presenting the completed capstone project and course reflection.</p>
+                        <div class="coming-soon">Coming Soon</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const menuIcon = document.getElementById('menu-icon');
+            
+            sidebar.classList.toggle('open');
+            menuIcon.textContent = sidebar.classList.contains('open') ? '×' : '☰';
+        }
+
+        // Smooth scrolling and active navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = e.target.getAttribute('href').substring(1);
+                const element = document.getElementById(target);
+                
+                // Close mobile menu
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('menu-icon').textContent = '☰';
+                
+                // Scroll to section
+                element.scrollIntoView({ behavior: 'smooth' });
+                
+                // Update active nav
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                e.target.classList.add('active');
+            });
+        });
+
+        // Update active navigation on scroll
+        window.addEventListener('scroll', () => {
+            const sections = ['home', 'about', 'course', 'submissions'];
+            const scrollPos = window.scrollY + 200;
+            
+            sections.forEach((section, index) => {
+                const element = document.getElementById(section);
+                if (element) {
+                    const offsetTop = element.offsetTop;
+                    const height = element.offsetHeight;
+                    
+                    if (scrollPos >= offsetTop && scrollPos < offsetTop + height) {
+                        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                        const activeLink = document.querySelector(`[href="#${section}"]`);
+                        if (activeLink) activeLink.classList.add('active');
+                    }
+                }
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+            
+            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+                document.getElementById('menu-icon').textContent = '☰';
+            }
+        });
+    </script>
+</body>
+</html>
